@@ -1,0 +1,37 @@
+<h1>Loja</h1>
+
+<div>
+  <h2>
+    Carrinho: {{ carrinhoService.quantidade() }} itens
+  </h2>
+</div>
+
+<hr>
+
+<h2>Produtos</h2>
+
+<div>
+
+  @for (produto of produtos; track produto.id) {
+
+    <div>
+
+      <h3>{{ produto.nome }}</h3>
+
+      <p>
+        Preço: R$ {{ produto.preco }}
+      </p>
+
+      <button (click)="adicionarAoCarrinho(produto)">
+        Adicionar ao carrinho
+      </button>
+
+    </div>
+
+    <hr>
+
+  }
+
+</div>
+
+<router-outlet></router-outlet>

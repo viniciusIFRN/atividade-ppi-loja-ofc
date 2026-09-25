@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { Item, Produto } from './item';
 
 @Injectable({
@@ -8,65 +8,44 @@ export class CarrinhoService {
 
   itens = signal<Item[]>([]);
 
-  adicionar(produto: Produto): void {
-    const item = this.itens().find(
-      item => item.produto.id === produto.id
-    );
+  quantidade = computed(() =>
+    this.itens().reduce(
+      (total, item) => total + item.quantidade,
+      0
+    )
+  );
 
-    if (item) {
-      this.aumentar(item.id);
-      return;
-    }
+  adicionar(produto: Produto) {
 
-    this.itens.update(itens => [
-      ...itens,
-      {
-        id: produto.id,
-        produto: produto,
-        quantidade: 1
-      }
-    ]);
-  }
+    this.itens.update(itens => {
 
-  aumentar(id: number): void {
-    this.itens.update(itens =>
-      itens.map(item =>
-        item.id === id
-          ? {
-              ...item,
-              quantidade: item.quantidade + 1
-            }
-          : item
-      )
-    );
-  }
+      const itemExistente = itens.find(
+        item => item.produto.id === produto.id
+      );
 
-  diminuir(id: number): void {
-    this.itens.update(itens =>
-      itens
-        .map(item =>
-          item.id === id
+      if (itemExistente) {
+
+        return itens.map(item =>
+          item.produto.id === produto.id
             ? {
                 ...item,
-                quantidade: item.quantidade - 1
+                quantidade: item.quantidade + 1
               }
             : item
-        )
-        .filter(item => item.quantidade > 0)
-    );
-  }
+        );
 
-  remover(id: number): void {
-    this.itens.update(itens =>
-      itens.filter(item => item.id !== id)
-    );
-  }
+      }
 
-  obterTotal(): number {
-    return this.itens().reduce(
-      (total, item) =>
-        total + item.produto.preco * item.quantidade,
-      0
-    );
+      return [
+        ...itens,
+        {
+          id: produto.id,
+          produto: produto,
+          quantidade: 1
+        }
+      ];
+
+    });
+
   }
 }

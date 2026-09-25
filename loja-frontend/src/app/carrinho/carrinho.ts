@@ -1,15 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CarrinhoService } from '../carrinho-service';
 
 @Component({
-  imports: [],
   selector: 'app-carrinho',
-  styleUrl: './carrinho.scss',
+  imports: [],
   templateUrl: './carrinho.html',
+  styleUrl: './carrinho.scss'
 })
 export class Carrinho {
-  readonly #carrinhoService = inject(CarrinhoService)
 
-  protected readonly quant =
-    this.#carrinhoService.qtdItens()
+  carrinhoService = inject(CarrinhoService);
+
 }
